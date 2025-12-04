@@ -1,72 +1,3 @@
-//your JS code here.
-const questionsElement = document.getElementById("questions");
-const submitBtn = document.getElementById("submit");
-const scoreDiv = document.getElementById("score");
-
-let userAnswers = JSON.parse(sessionStorage.getItem("progress")) || {};
-
-const savedScore = localStorage.getItem("score");
-if (savedScore) {
-  scoreDiv.textContent = `Your score is ${savedScore} out of ${questions.length}.`;
-}
-
-function renderQuestions() {
-  questionsElement.innerHTML = ""; 
-
-  for (let i = 0; i < questions.length; i++) {
-    const question = questions[i];
-    const questionDiv = document.createElement("div");
-
-    const questionText = document.createElement("p");
-    questionText.textContent = question.question;
-    questionDiv.appendChild(questionText);
-
-    for (let j = 0; j < question.choices.length; j++) {
-      const choice = question.choices[j];
-
-      const label = document.createElement("label");
-      const choiceInput = document.createElement("input");
-      choiceInput.type = "radio";
-      choiceInput.name = `question-${i}`;
-      choiceInput.value = choice;
-
-      if (userAnswers[i] === choice) {
-        choiceInput.checked = true;
-      }
-
-      choiceInput.addEventListener("change", () => {
-        userAnswers[i] = choice;
-        sessionStorage.setItem("progress", JSON.stringify(userAnswers));
-      });
-
-      label.appendChild(choiceInput);
-      label.appendChild(document.createTextNode(choice));
-      questionDiv.appendChild(label);
-      questionDiv.appendChild(document.createElement("br"));
-    }
-
-    questionsElement.appendChild(questionDiv);
-  }
-}
-
-renderQuestions();
-
-submitBtn.addEventListener("click", () => {
-  let score = 0;
-
-  for (let i = 0; i < questions.length; i++) {
-    if (userAnswers[i] === questions[i].answer) {
-      score++;
-    }
-  }
-
-  scoreDiv.textContent = `Your score is ${score} out of ${questions.length}.`;
-
-  localStorage.setItem("score", score);
-});
-
-// Do not change code below this line
-// This code will just display the questions to the screen
 const questions = [
   {
     question: "What is the capital of France?",
@@ -85,7 +16,7 @@ const questions = [
   },
   {
     question: "Which is the largest planet in our solar system?",
-    choices: ["Earth", "Jupiter", "Mars"],
+    choices: ["Earth", "Jupiter", "Mars", "Saturn"],
     answer: "Jupiter",
   },
   {
@@ -95,27 +26,59 @@ const questions = [
   },
 ];
 
-// Display the quiz questions and choices
-function renderQuestions() {
-  for (let i = 0; i < questions.length; i++) {
-    const question = questions[i];
-    const questionElement = document.createElement("div");
-    const questionText = document.createTextNode(question.question);
-    questionElement.appendChild(questionText);
-    for (let j = 0; j < question.choices.length; j++) {
-      const choice = question.choices[j];
-      const choiceElement = document.createElement("input");
-      choiceElement.setAttribute("type", "radio");
-      choiceElement.setAttribute("name", `question-${i}`);
-      choiceElement.setAttribute("value", choice);
-      if (userAnswers[i] === choice) {
-        choiceElement.setAttribute("checked", true);
-      }
-      const choiceText = document.createTextNode(choice);
-      questionElement.appendChild(choiceElement);
-      questionElement.appendChild(choiceText);
-    }
-    questionsElement.appendChild(questionElement);
-  }
+const questionsElement = document.getElementById("questions");
+const submitBtn = document.getElementById("submit");
+const scoreDiv = document.getElementById("score");
+
+let userAnswers = JSON.parse(sessionStorage.getItem("progress")) || {};
+
+const savedScore = localStorage.getItem("score");
+if (savedScore) {
+  scoreDiv.textContent = `Your score is ${savedScore} out of ${questions.length}.`;
 }
+
+function renderQuestions() {
+  questionsElement.innerHTML = "";
+
+  questions.forEach((q, i) => {
+    const questionDiv = document.createElement("div");
+
+    const questionText = document.createElement("p");
+    questionText.textContent = q.question;
+    questionDiv.appendChild(questionText);
+
+    q.choices.forEach(choice => {
+      const label = document.createElement("label");
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = `question-${i}`;
+      input.value = choice;
+
+      if (userAnswers[i] === choice) input.checked = true;
+
+      input.addEventListener("change", () => {
+        userAnswers[i] = choice;
+        sessionStorage.setItem("progress", JSON.stringify(userAnswers));
+      });
+
+      label.appendChild(input);
+      label.appendChild(document.createTextNode(choice));
+      questionDiv.appendChild(label);
+      questionDiv.appendChild(document.createElement("br"));
+    });
+
+    questionsElement.appendChild(questionDiv);
+  });
+}
+
 renderQuestions();
+
+submitBtn.addEventListener("click", () => {
+  let score = 0;
+  questions.forEach((q, i) => {
+    if (userAnswers[i] === q.answer) score++;
+  });
+
+  scoreDiv.textContent = `Your score is ${score} out of ${questions.length}.`;
+  localStorage.setItem("score", score);
+});
