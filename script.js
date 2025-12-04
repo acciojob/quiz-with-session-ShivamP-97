@@ -54,7 +54,10 @@ function renderQuestions() {
       input.name = `question-${i}`;
       input.value = choice;
 
-      if (userAnswers[i] === choice) input.checked = true;
+      if (userAnswers[i] === choice) {
+		  input.checked = true;
+		  input.setAttribute("checked", "true"); 
+	  }
 
       input.addEventListener("change", () => {
         userAnswers[i] = choice;
